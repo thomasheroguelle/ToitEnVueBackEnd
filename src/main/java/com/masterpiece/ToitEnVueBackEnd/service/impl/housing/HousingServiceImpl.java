@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HousingServiceImpl implements HousingService {
@@ -54,5 +55,13 @@ public class HousingServiceImpl implements HousingService {
         }
 
         return modelMapper.map(createdHousing, HousingDto.class);
+    }
+
+    @Override
+    public List<HousingDto> getAllHousing() {
+        List<Housing> housingList = housingRepository.findAll();
+        return housingList.stream()
+                .map(housing -> modelMapper.map(housing, HousingDto.class))
+                .collect(Collectors.toList());
     }
 }

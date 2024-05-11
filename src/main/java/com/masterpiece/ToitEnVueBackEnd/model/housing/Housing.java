@@ -1,6 +1,9 @@
 package com.masterpiece.ToitEnVueBackEnd.model.housing;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.masterpiece.ToitEnVueBackEnd.model.file.File;
 import com.masterpiece.ToitEnVueBackEnd.model.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,12 +14,15 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -69,4 +75,8 @@ public class Housing {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "housing", cascade = CascadeType.ALL)
+    @JsonDeserialize
+    private List<File> files = new ArrayList<>(); // Initialisation de la liste
 }

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface HousingService {
     HousingDto saveHousingWithFiles(CreateHousingDto createHousingDto, List<MultipartFile> files);
+    List<HousingDto> getAllHousing();
 
 }

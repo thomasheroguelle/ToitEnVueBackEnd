@@ -1,4 +1,7 @@
 package com.masterpiece.ToitEnVueBackEnd.repository.housing;
 
-public interface HousingRepository {
+import com.masterpiece.ToitEnVueBackEnd.model.housing.Housing;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface HousingRepository extends JpaRepository<Housing, Long> {
 }

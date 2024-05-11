@@ -1,4 +1,9 @@
 package com.masterpiece.ToitEnVueBackEnd.dto.housing;
 
-public class HousingDto {
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
+public class HousingDto extends CreateHousingDto {
+    private int housing_id;
 }

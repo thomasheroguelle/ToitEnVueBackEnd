@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -61,6 +62,15 @@ public class HousingController {
     public ResponseEntity<List<HousingDto>> getHousingList() {
         List<HousingDto> housingList = housingService.getAllHousing();
         return ResponseEntity.ok(housingList);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HousingDto> getHousingById(@PathVariable Long id) {
+        HousingDto housingById = housingService.getHousing(id);
+        if (housingById == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(housingById, HttpStatus.OK);
     }
 
 

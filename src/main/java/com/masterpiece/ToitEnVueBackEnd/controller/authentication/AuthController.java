@@ -87,6 +87,13 @@ public class AuthController {
                         role
                 ));
     }
+
+    @PostMapping("/signout")
+    public ResponseEntity<?> logoutUser() {
+        ResponseCookie cookie = jwtUtils.getCleanJwtCookie(); // nettoyage du cookie pour obtenir un cookie vide
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new AuthMessageResponse("Déconnexion réussie"));
+    }
 }
 
 

@@ -22,10 +22,13 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
+    @Value("${toto.app.jwtSecret}")
     private String jwtSecret;
 
+    @Value("${toto.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    @Value("${toto.app.jwtCookieName}")
     private String jwtCookie;
 
 

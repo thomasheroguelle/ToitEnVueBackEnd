@@ -64,4 +64,13 @@ public class HousingServiceImpl implements HousingService {
                 .map(housing -> modelMapper.map(housing, HousingDto.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public HousingDto getHousing(Long id) {
+        Housing housing = housingRepository.findById(id).orElse(null);
+        if (housing != null) {
+            return modelMapper.map(housing, HousingDto.class);
+        }
+        return null;
+    }
 }

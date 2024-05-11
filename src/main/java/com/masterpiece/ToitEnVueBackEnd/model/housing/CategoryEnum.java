@@ -1,4 +1,6 @@
 package com.masterpiece.ToitEnVueBackEnd.model.housing;
 
-public class CategoryEnum {
+public enum CategoryEnum {
+    APARTMENT,
+    HOUSE
 }

@@ -30,8 +30,9 @@ public class HousingController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @PostMapping
-    public ResponseEntity<?> createHousing(@Valid @RequestPart("housing") String createHousingJson
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createHousing(@Valid @RequestPart("housing") String createHousingJson,
+                                           @Valid @RequestPart("files") List<MultipartFile> files
     ) throws JsonProcessingException {
 
         CreateHousingDto createHousingDto = objectMapper.readValue(createHousingJson, CreateHousingDto.class);
@@ -42,27 +43,8 @@ public class HousingController {
         if (!Objects.equals(UserDetailsUtils.getUserDetails().getUsername(), createHousingDto.getUsername())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Accès non autorisé : vous n'êtes pas autorisé à effectuer cette action");
         }
-
-        try {
-            HousingDto savedHousing = housingService.createHousing(createHousingDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedHousing);
-        } catch (JwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT invalide.");
-        }
-    }
-
-    @PostMapping(value = "with-files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createHousingWithFiles(@Valid @RequestPart("housing") String createHousingJson,
-                                                    @Valid @RequestPart("files") List<MultipartFile> files
-    ) throws JsonProcessingException {
-
-        CreateHousingDto createHousingDto = objectMapper.readValue(createHousingJson, CreateHousingDto.class);
-
-        if (!Objects.equals(UserDetailsUtils.getUserDetails().getId(), createHousingDto.getUser_id())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Incohérence au niveau des ID");
-        }
-        if (!Objects.equals(UserDetailsUtils.getUserDetails().getUsername(), createHousingDto.getUsername())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Accès non autorisé : vous n'êtes pas autorisé à effectuer cette action");
+        if (files == null || files.isEmpty()) {
+            return ResponseEntity.badRequest().body("Aucun fichier n'a été fourni.");
         }
         try {
             HousingDto savedHousing = housingService.saveHousingWithFiles(createHousingDto, files);
@@ -73,5 +55,6 @@ public class HousingController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
 }

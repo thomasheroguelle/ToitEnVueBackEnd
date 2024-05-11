@@ -32,19 +32,6 @@ public class HousingServiceImpl implements HousingService {
     private FileStorageService fileStorageService;
 
     @Override
-    public HousingDto createHousing(CreateHousingDto createHousingDto) {
-
-        User user = userRepository.findUserById(createHousingDto.getUser_id());
-
-        Housing housing = modelMapper.map(createHousingDto, Housing.class);
-        housing.setUser(user);
-        Housing createdHousing = housingRepository.save(housing);
-
-
-        return modelMapper.map(createdHousing, HousingDto.class);
-    }
-
-    @Override
     public HousingDto saveHousingWithFiles(CreateHousingDto createHousingDto, List<MultipartFile> files) {
 
         User user = userRepository.findUserById(createHousingDto.getUser_id());

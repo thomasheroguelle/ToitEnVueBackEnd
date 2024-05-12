@@ -71,7 +71,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/auth/signin").permitAll()
                                 .requestMatchers("/api/auth/signup").permitAll()
 
+                                .requestMatchers(HttpMethod.GET, "/api/v1/files/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/housing/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/booking/**").permitAll()
 
 
                                 .anyRequest().authenticated()

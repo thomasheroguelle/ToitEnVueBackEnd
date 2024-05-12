@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.Objects;
+
 @RestController
 @RequestMapping("api/v1/booking")
 public class BookingController {
@@ -23,6 +24,7 @@ public class BookingController {
     private BookingService bookingService;
     @Autowired
     private HousingService housingService;
+
     @PostMapping
     public ResponseEntity<?> makeBooking(
             @RequestParam Long housingId,
@@ -39,7 +41,7 @@ public class BookingController {
             if (success) {
                 return ResponseEntity.ok().build();
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create booking");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Veuillez séléctionner des dates valides");
             }
         } catch (BookingException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

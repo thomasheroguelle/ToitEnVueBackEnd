@@ -103,7 +103,6 @@ public class HousingServiceImpl implements HousingService {
             housingFromUser.setRooms(housing.getRooms());
             housingFromUser.setBedrooms(housing.getBedrooms());
             housingFromUser.setBathrooms(housing.getBathrooms());
-            housingFromUser.setFurnished(housing.isFurnished());
             housingFromUser.setLiving_space(housing.getLiving_space());
             housingFromUser.setHighlights(housing.getHighlights());
             housingFromUser.setYear_of_construction(housing.getYear_of_construction());

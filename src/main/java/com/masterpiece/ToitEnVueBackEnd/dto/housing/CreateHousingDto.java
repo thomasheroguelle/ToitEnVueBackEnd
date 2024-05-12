@@ -42,9 +42,6 @@ public class CreateHousingDto {
     @NotNull(message = "Le nombre de salles de bain ne peut pas être vide")
     private Integer bathrooms;
 
-    @NotBlank(message = "La valeur meublé/ne meublé ne peut pas être vide")
-    private boolean furnished;
-
     @NotNull(message = "La surface habitable ne peut pas être vide")
     private Integer living_space;
 

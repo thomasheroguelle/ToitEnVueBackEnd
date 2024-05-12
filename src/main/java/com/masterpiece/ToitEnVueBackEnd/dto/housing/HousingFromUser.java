@@ -24,7 +24,6 @@ public class HousingFromUser {
     private int rooms;
     private int bedrooms;
     private int bathrooms;
-    private boolean furnished;
     private int living_space;
     private Set<String> highlights;
     private int year_of_construction;

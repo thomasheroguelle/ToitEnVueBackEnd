@@ -61,8 +61,6 @@ public class Housing {
     @Min(value = 1)
     @Column(name = "bathrooms", nullable = false)
     private int bathrooms;
-    @Column(name = "furnished", nullable = false)
-    private boolean furnished;
     @Column(name = "living_space", nullable = false)
     private int living_space;
     @Column(name = "highlights", nullable = false)

@@ -1,7 +1,11 @@
 package com.masterpiece.ToitEnVueBackEnd.service.impl.housing;
 
+import com.masterpiece.ToitEnVueBackEnd.dto.file.FileDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.housing.CreateHousingDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingFromUser;
+import com.masterpiece.ToitEnVueBackEnd.model.booking.Booking;
+import com.masterpiece.ToitEnVueBackEnd.model.booking.BookingDate;
 import com.masterpiece.ToitEnVueBackEnd.model.file.File;
 import com.masterpiece.ToitEnVueBackEnd.model.housing.Housing;
 import com.masterpiece.ToitEnVueBackEnd.model.user.User;
@@ -72,5 +76,56 @@ public class HousingServiceImpl implements HousingService {
             return modelMapper.map(housing, HousingDto.class);
         }
         return null;
+    }
+
+    @Override
+    public List<HousingFromUser> findHousingByUserId(Long userId) {
+        List<Housing> housingList = housingRepository.findHousingsByUserId(userId);
+        List<HousingFromUser> housingFromUserList = new ArrayList<>();
+
+
+        for (Housing housing : housingList) {
+            HousingFromUser housingFromUser = new HousingFromUser();
+
+            List<FileDto> files = housing.getFiles().stream()
+                    .map(file -> modelMapper.map(file, FileDto.class))
+                    .collect(Collectors.toList());
+
+            userRepository.findUserById(housing.getUser().getId());
+            housingFromUser.setHousing_id(housing.getHousing_id());
+            housingFromUser.setTitle(housing.getTitle());
+            housingFromUser.setAddress(housing.getAddress());
+            housingFromUser.setCity(housing.getCity());
+            housingFromUser.setZipcode(housing.getZipcode());
+            housingFromUser.setDescription(housing.getDescription());
+            housingFromUser.setPrice(housing.getPrice());
+            housingFromUser.setCategory(housing.getCategory());
+            housingFromUser.setRooms(housing.getRooms());
+            housingFromUser.setBedrooms(housing.getBedrooms());
+            housingFromUser.setBathrooms(housing.getBathrooms());
+            housingFromUser.setFurnished(housing.isFurnished());
+            housingFromUser.setLiving_space(housing.getLiving_space());
+            housingFromUser.setHighlights(housing.getHighlights());
+            housingFromUser.setYear_of_construction(housing.getYear_of_construction());
+            housingFromUser.setHousingCondition(housing.getHousingCondition());
+            housingFromUser.setUser_id(housing.getUser().getId());
+            housingFromUser.setUsername(housing.getUser().getUsername());
+            housingFromUser.setFiles(files);
+
+            List<Booking> bookings = housing.getBookings();
+            List<BookingDate> bookingDates = new ArrayList<>();
+
+            for (Booking booking : bookings) {
+                BookingDate bookingDate = new BookingDate();
+                bookingDate.setBeginningDate(booking.getBeginningDate());
+                bookingDate.setEndDate(booking.getEndDate());
+                bookingDates.add(bookingDate);
+            }
+
+            housingFromUser.setBookingDate(bookingDates);
+            housingFromUserList.add(housingFromUser);
+        }
+
+        return housingFromUserList;
     }
 }

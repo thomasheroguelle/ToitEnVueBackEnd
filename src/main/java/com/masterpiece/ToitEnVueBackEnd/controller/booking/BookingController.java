@@ -1,5 +1,6 @@
 package com.masterpiece.ToitEnVueBackEnd.controller.booking;
 
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.BookingDetailsDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingDto;
 import com.masterpiece.ToitEnVueBackEnd.exceptions.booking.BookingException;
 import com.masterpiece.ToitEnVueBackEnd.security.jwt.UserDetailsUtils;
@@ -9,12 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -46,5 +50,11 @@ public class BookingController {
         } catch (BookingException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/details/{housingId}")
+    public ResponseEntity<List<BookingDetailsDto>> getBookingDetailsByHousingId(@PathVariable Long housingId) {
+        List<BookingDetailsDto> bookingDetails = bookingService.getBookingDetailsByHousingId(housingId);
+        return new ResponseEntity<>(bookingDetails, HttpStatus.OK);
     }
 }

@@ -14,5 +14,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND b.endDate > :beginningDate"
     )
     List<Booking> findByHousingIdAndDates(Long housingId, Date beginningDate, Date endDate);
+    @Query("SELECT b FROM Booking b WHERE b.housing.id = :housingId")
+    List<Booking> findByHousingId(Long housingId);
 
 }

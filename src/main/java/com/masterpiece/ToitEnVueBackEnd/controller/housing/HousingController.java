@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masterpiece.ToitEnVueBackEnd.dto.housing.CreateHousingDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingFromUser;
 import com.masterpiece.ToitEnVueBackEnd.exceptions.file.EmptyFileException;
 import com.masterpiece.ToitEnVueBackEnd.security.jwt.UserDetailsUtils;
 import com.masterpiece.ToitEnVueBackEnd.service.housing.HousingService;
@@ -71,6 +72,17 @@ public class HousingController {
             return ResponseEntity.notFound().build();
         }
         return new ResponseEntity<>(housingById, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<HousingFromUser>> getHousingByUserId(@PathVariable Long userId) {
+        Long authenticatedUserId = UserDetailsUtils.getUserDetails().getId();
+
+        if (!Objects.equals(authenticatedUserId, userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+        List<HousingFromUser> housingList = housingService.findHousingByUserId(userId);
+        return ResponseEntity.ok(housingList);
     }
 
 

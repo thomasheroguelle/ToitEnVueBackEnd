@@ -1,6 +1,7 @@
 package com.masterpiece.ToitEnVueBackEnd.model.housing;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.masterpiece.ToitEnVueBackEnd.model.booking.Booking;
 import com.masterpiece.ToitEnVueBackEnd.model.file.File;
 import com.masterpiece.ToitEnVueBackEnd.model.user.User;
 import jakarta.persistence.CascadeType;
@@ -78,5 +79,8 @@ public class Housing {
 
     @OneToMany(mappedBy = "housing", cascade = CascadeType.ALL)
     @JsonDeserialize
-    private List<File> files = new ArrayList<>(); // Initialisation de la liste
+    private List<File> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "housing", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
 }

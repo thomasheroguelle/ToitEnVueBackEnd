@@ -1,15 +1,23 @@
 package com.masterpiece.ToitEnVueBackEnd.service.impl.booking;
 
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.BookingDetailsDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.MakeBookingDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.OwnerChoiceDto;
+import com.masterpiece.ToitEnVueBackEnd.exceptions.UnauthorizedAccessException;
 import com.masterpiece.ToitEnVueBackEnd.exceptions.booking.BookingException;
 import com.masterpiece.ToitEnVueBackEnd.model.booking.Booking;
+import com.masterpiece.ToitEnVueBackEnd.model.booking.StatusEnum;
 import com.masterpiece.ToitEnVueBackEnd.model.housing.Housing;
+import com.masterpiece.ToitEnVueBackEnd.model.user.User;
 import com.masterpiece.ToitEnVueBackEnd.repository.booking.BookingRepository;
 import com.masterpiece.ToitEnVueBackEnd.repository.housing.HousingRepository;
+import com.masterpiece.ToitEnVueBackEnd.repository.user.UserRepository;
 import com.masterpiece.ToitEnVueBackEnd.security.jwt.UserDetailsUtils;
 import com.masterpiece.ToitEnVueBackEnd.service.booking.BookingService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,18 +34,21 @@ public class BookingServiceImpl implements BookingService {
     private HousingRepository housingRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public boolean makeBooking(Long housingId, Date beginningDate, Date endDate) {
+    public boolean makeBooking(MakeBookingDto makeBookingDto) {
         Date currentDate = new Date();
 
-        if (!isValidDate(beginningDate, endDate, currentDate)) {
+        if (!isValidDate(makeBookingDto, currentDate)) {
             return false;
         }
 
-        Long userId = UserDetailsUtils.getUserDetails().getId();
+        Long userId = UserDetailsUtils.getUserDetails().getId(); // user logged
 
-        Optional<Housing> housingOptional = housingRepository.findById(housingId);
+        Optional<Housing> housingOptional = housingRepository.findById(makeBookingDto.housing_id);
+        User user = userRepository.findUserById(userId);
 
         if (housingOptional.isPresent()) {
             Housing housing = housingOptional.get();
@@ -46,15 +57,17 @@ public class BookingServiceImpl implements BookingService {
                 return false;
             }
 
-            if (!isHousingAvailable(housingId, beginningDate, endDate)) {
+            if (!isHousingAvailable(makeBookingDto)) {
                 throw new BookingException("Les dates spécifiées sont déjà réservées pour ce logement.");
             }
 
             Booking booking = new Booking();
-            booking.setBeginningDate(beginningDate);
-            booking.setEndDate(endDate);
-            booking.setUser(housing.getUser());
+            booking.setBeginningDate(makeBookingDto.getBeginningDate());
+            booking.setEndDate(makeBookingDto.getEndDate());
+            booking.setUser(housing.getUser()); // owner
             booking.setHousing(housing);
+            booking.setStatus(StatusEnum.PENDING);
+            booking.setInterested(user); // logged
 
             bookingRepository.save(booking);
             return true;
@@ -64,14 +77,33 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public boolean isHousingAvailable(Long housingId, Date beginningDate, Date endDate) {
-        List<Booking> bookings = bookingRepository.findByHousingIdAndDates(housingId, beginningDate, endDate);
+    public OwnerChoiceDto ownerChoice(OwnerChoiceDto ownerChoiceDto) {
+        Booking booking = bookingRepository.findById(ownerChoiceDto.getBookingId()).orElseThrow(() -> new BookingException("La réservation n'existe pas"));
+        Long userId = UserDetailsUtils.getUserDetails().getId(); // user logged
+
+        if (!Objects.equals(booking.getUser().getId(), userId)) {
+            throw new UnauthorizedAccessException("Vous n'êtes pas autorisé à modifier cette réservation");
+        }
+
+        booking.setStatus(ownerChoiceDto.getStatus());
+        Booking savedBooking = bookingRepository.save(booking);
+
+        OwnerChoiceDto responseDto = new OwnerChoiceDto();
+        responseDto.setBookingId(savedBooking.getId());
+        responseDto.setStatus(savedBooking.getStatus());
+        return responseDto;
+    }
+
+
+    @Override
+    public boolean isHousingAvailable(MakeBookingDto makeBookingDto) {
+        List<Booking> bookings = bookingRepository.findByHousingIdAndDates(makeBookingDto.housing_id, makeBookingDto.getBeginningDate(), makeBookingDto.getEndDate());
         return bookings.isEmpty();
     }
 
     @Override
-    public boolean isValidDate(Date beginningDate, Date endDate, Date currentDate) {
-        return !beginningDate.before(currentDate) && !endDate.before(currentDate) && !endDate.before(beginningDate);
+    public boolean isValidDate(MakeBookingDto makeBookingDto, Date currentDate) {
+        return !makeBookingDto.beginningDate.before(currentDate) && !makeBookingDto.endDate.before(currentDate) && !makeBookingDto.endDate.before(makeBookingDto.beginningDate);
     }
 
     @Override

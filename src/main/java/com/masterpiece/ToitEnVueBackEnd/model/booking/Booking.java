@@ -1,9 +1,13 @@
 package com.masterpiece.ToitEnVueBackEnd.model.booking;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.masterpiece.ToitEnVueBackEnd.model.housing.Housing;
 import com.masterpiece.ToitEnVueBackEnd.model.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +31,8 @@ public class Booking {
     private Long id;
 
     @Column(name = "status", nullable = false)
-    private boolean status;
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
 
     @Column(name = "beginning_date", nullable = false)
     private Date beginningDate;
@@ -38,6 +43,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id_interested", nullable = false)
+    private User interested;
 
     @ManyToOne
     @JoinColumn(name = "housing_id", nullable = false)

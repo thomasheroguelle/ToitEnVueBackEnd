@@ -22,10 +22,13 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
+    @Value("${toto.app.jwtSecret}") // secret utilisé pour signer les JWT
     private String jwtSecret;
 
+    @Value("${toto.app.jwtExpirationMs}") // durée de validité des JWT (millisecondes)
     private int jwtExpirationMs;
 
+    @Value("${toto.app.jwtCookieName}") // nom du cookie où le JWT est stocké
     private String jwtCookie;
 
 

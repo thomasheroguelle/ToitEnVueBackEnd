@@ -1,5 +1,6 @@
 package com.masterpiece.ToitEnVueBackEnd.model.housing;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.masterpiece.ToitEnVueBackEnd.model.booking.Booking;
 import com.masterpiece.ToitEnVueBackEnd.model.file.File;
@@ -80,5 +81,6 @@ public class Housing {
     private List<File> files = new ArrayList<>();
 
     @OneToMany(mappedBy = "housing", cascade = CascadeType.ALL)
+    @JsonManagedReference // Prevent infinite recursion
     private List<Booking> bookings = new ArrayList<>();
 }

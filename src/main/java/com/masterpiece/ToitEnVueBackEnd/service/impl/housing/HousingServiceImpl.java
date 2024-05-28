@@ -97,18 +97,7 @@ public class HousingServiceImpl implements HousingService {
             housingFromUser.setAddress(housing.getAddress());
             housingFromUser.setCity(housing.getCity());
             housingFromUser.setZipcode(housing.getZipcode());
-            housingFromUser.setDescription(housing.getDescription());
             housingFromUser.setPrice(housing.getPrice());
-            housingFromUser.setCategory(housing.getCategory());
-            housingFromUser.setRooms(housing.getRooms());
-            housingFromUser.setBedrooms(housing.getBedrooms());
-            housingFromUser.setBathrooms(housing.getBathrooms());
-            housingFromUser.setLiving_space(housing.getLiving_space());
-            housingFromUser.setHighlights(housing.getHighlights());
-            housingFromUser.setYear_of_construction(housing.getYear_of_construction());
-            housingFromUser.setHousingCondition(housing.getHousingCondition());
-            housingFromUser.setUser_id(housing.getUser().getId());
-            housingFromUser.setUsername(housing.getUser().getUsername());
             housingFromUser.setFiles(files);
 
             List<Booking> bookings = housing.getBookings();
@@ -121,7 +110,6 @@ public class HousingServiceImpl implements HousingService {
                 bookingDates.add(bookingDate);
             }
 
-            housingFromUser.setBookingDate(bookingDates);
             housingFromUserList.add(housingFromUser);
         }
 

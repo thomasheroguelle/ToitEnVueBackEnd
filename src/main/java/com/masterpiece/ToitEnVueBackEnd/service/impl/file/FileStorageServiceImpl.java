@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Stream;
+
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
     private final Path root = Paths.get("uploads");
@@ -34,6 +35,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new EmptyFileException("Veuillez insérer un fichier");
         }
         try {
+            this.init();
             Files.copy(file.getInputStream(), this.root.resolve(Objects.requireNonNull(file.getOriginalFilename())));
         } catch (Exception e) {
             if (e instanceof FileAlreadyExistsException) {

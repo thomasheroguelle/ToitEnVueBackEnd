@@ -1,19 +1,25 @@
 package com.masterpiece.ToitEnVueBackEnd.service.booking;
 
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.BookingDetailsDto;
-import org.springframework.stereotype.Service;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.MakeBookingDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.OwnerChoiceDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.UserBookingsDto;
 
 import java.util.Date;
 import java.util.List;
 
 public interface BookingService {
-    boolean makeBooking(Long housingId, Date beginningDate, Date endDate);
+    boolean makeBooking(MakeBookingDto makeBookingDto);
 
-    boolean isHousingAvailable(Long housingId, Date beginningDate, Date endDate);
+    OwnerChoiceDto ownerChoice(OwnerChoiceDto ownerChoiceDto);
 
-    boolean isValidDate(Date beginningDate, Date endDate, Date currentDate);
+    boolean isHousingAvailable(MakeBookingDto makeBookingDto);
+
+    boolean isValidDate(MakeBookingDto makeBookingDto, Date currentDate);
 
     List<BookingDetailsDto> getBookingDetailsByHousingId(Long housingId);
 
     double calculateTotalCost(double pricePerDay, Date beginningDate, Date endDate);
+
+    List<UserBookingsDto> findBookingByUserId();
 }

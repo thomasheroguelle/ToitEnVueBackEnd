@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface HousingRepository extends JpaRepository<Housing, Long> {
     @Query("SELECT h FROM Housing h WHERE h.user.id = :userId")
-    List<Housing> findHousingsByUserId(@Param("userId") Long userId);
+    List<Housing>findHousingsByUserId(@Param("userId") Long userId);
 }

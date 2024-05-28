@@ -3,6 +3,10 @@ package com.masterpiece.ToitEnVueBackEnd.service.impl.booking;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.BookingDetailsDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.MakeBookingDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.OwnerChoiceDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.UserBookingsDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.file.FileDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingFromUser;
 import com.masterpiece.ToitEnVueBackEnd.exceptions.UnauthorizedAccessException;
 import com.masterpiece.ToitEnVueBackEnd.exceptions.booking.BookingException;
 import com.masterpiece.ToitEnVueBackEnd.model.booking.Booking;
@@ -16,10 +20,9 @@ import com.masterpiece.ToitEnVueBackEnd.security.jwt.UserDetailsUtils;
 import com.masterpiece.ToitEnVueBackEnd.service.booking.BookingService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -85,12 +88,12 @@ public class BookingServiceImpl implements BookingService {
             throw new UnauthorizedAccessException("Vous n'êtes pas autorisé à modifier cette réservation");
         }
 
-        booking.setStatus(ownerChoiceDto.getStatus());
+        booking.setStatus(ownerChoiceDto.getBookingStatus());
         Booking savedBooking = bookingRepository.save(booking);
 
         OwnerChoiceDto responseDto = new OwnerChoiceDto();
         responseDto.setBookingId(savedBooking.getId());
-        responseDto.setStatus(savedBooking.getStatus());
+        responseDto.setBookingStatus(savedBooking.getStatus());
         return responseDto;
     }
 
@@ -122,6 +125,40 @@ public class BookingServiceImpl implements BookingService {
     public double calculateTotalCost(double pricePerDay, Date beginningDate, Date endDate) {
         long numberOfDays = (endDate.getTime() - beginningDate.getTime()) / (1000 * 60 * 60 * 24);
         return pricePerDay * numberOfDays;
+    }
+
+    @Override
+    public List<UserBookingsDto> findBookingByUserId() {
+        Long userId = UserDetailsUtils.getUserDetails().getId(); // utilisateur connecté
+        List<Booking> bookings = bookingRepository.findByUserInterestedId(userId);
+        List<UserBookingsDto> bookingDetailsDtos = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            UserBookingsDto bookingDetailsDto = new UserBookingsDto();
+            bookingDetailsDto.setId(Math.toIntExact(booking.getId()));
+            bookingDetailsDto.setInterested(booking.getInterested().getId());
+            bookingDetailsDto.setBeginningDate(booking.getBeginningDate());
+            bookingDetailsDto.setEndDate(booking.getEndDate());
+            bookingDetailsDto.setStatusEnum(booking.getStatus());
+
+            HousingFromUser housingDto = new HousingFromUser();
+            housingDto.setHousing_id(Math.toIntExact(booking.getHousing().getHousing_id()));
+            housingDto.setTitle(booking.getHousing().getTitle());
+            housingDto.setAddress(booking.getHousing().getAddress());
+            housingDto.setCity(booking.getHousing().getCity());
+            housingDto.setZipcode(booking.getHousing().getZipcode());
+            housingDto.setPrice(booking.getHousing().getPrice());
+
+            List<FileDto> fileDtos = booking.getHousing().getFiles().stream()
+                    .map(file -> modelMapper.map(file, FileDto.class))
+                    .collect(Collectors.toList());
+            housingDto.setFiles(fileDtos);
+
+            bookingDetailsDto.setHousingDto(housingDto);
+            bookingDetailsDtos.add(bookingDetailsDto);
+        }
+
+        return bookingDetailsDtos;
     }
 
 

@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class OwnerChoiceDto {
     private Long bookingId;
-    private StatusEnum status;
+    private StatusEnum bookingStatus;
 }
 

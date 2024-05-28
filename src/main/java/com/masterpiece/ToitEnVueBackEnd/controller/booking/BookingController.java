@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.BookingDetailsDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.MakeBookingDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.OwnerChoiceDto;
+import com.masterpiece.ToitEnVueBackEnd.dto.booking.UserBookingsDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingDto;
 import com.masterpiece.ToitEnVueBackEnd.exceptions.booking.BookingException;
 import com.masterpiece.ToitEnVueBackEnd.model.booking.Booking;
@@ -75,10 +76,16 @@ public class BookingController {
     @PatchMapping("/owner-choice")
     public ResponseEntity<OwnerChoiceDto> ownerChoice(@RequestBody OwnerChoiceDto ownerChoiceDto) {
         try {
-           OwnerChoiceDto updatedBooking = bookingService.ownerChoice(ownerChoiceDto);
-           return ResponseEntity.ok(updatedBooking);
+            OwnerChoiceDto updatedBooking = bookingService.ownerChoice(ownerChoiceDto);
+            return ResponseEntity.ok(updatedBooking);
         } catch (BookingException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+        @GetMapping("/user-bookings")
+        public ResponseEntity<List<UserBookingsDto>> getAllBookingsFromUser() {
+            List<UserBookingsDto> bookingDetailsDtos = bookingService.findBookingByUserId();
+            return new ResponseEntity<>(bookingDetailsDtos, HttpStatus.OK);
+        }
 }

@@ -123,9 +123,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public double calculateTotalCost(double pricePerDay, Date beginningDate, Date endDate) {
-        long numberOfDays = (endDate.getTime() - beginningDate.getTime()) / (1000 * 60 * 60 * 24);
+        long numberOfDays = (endDate.getTime() - beginningDate.getTime()) / (1000 * 60 * 60 * 24) + 1; // 1000 = millisecondes = 1 sec / 60 secondes = 2 = 1 min / 60 minutes = 1 h / 24 heures = 1 jour+ 1 en incluant la date du jour
         return pricePerDay * numberOfDays;
     }
+
 
     @Override
     public List<UserBookingsDto> findBookingByUserId() {
@@ -140,6 +141,9 @@ public class BookingServiceImpl implements BookingService {
             bookingDetailsDto.setBeginningDate(booking.getBeginningDate());
             bookingDetailsDto.setEndDate(booking.getEndDate());
             bookingDetailsDto.setStatusEnum(booking.getStatus());
+            double totalCost = calculateTotalCost(booking.getHousing().getPrice(), booking.getBeginningDate(), booking.getEndDate());
+            bookingDetailsDto.setTotalPrice(totalCost);
+
 
             HousingFromUser housingDto = new HousingFromUser();
             housingDto.setHousing_id(Math.toIntExact(booking.getHousing().getHousing_id()));

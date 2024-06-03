@@ -20,4 +20,5 @@ public class UserBookingsDto {
     private Date endDate;
     private HousingFromUser housingDto;
     private StatusEnum statusEnum;
+    private double totalPrice;
 }

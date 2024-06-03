@@ -49,8 +49,8 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public Resource load(String filename) {
         try {
-            Path file = root.resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
+            Path file = root.resolve(filename); // on peut revenir a la racine du fichier avec le resolve , c'est ce qui fait que l'attaquant peut accéder à tout fichier
+            Resource resource = new UrlResource(file.toUri()); // trouver une méthode qui empeche d'aller a la racine et transformer les filename en uuid.content-type
 
             if (resource.exists() || resource.isReadable()) {
                 return resource;

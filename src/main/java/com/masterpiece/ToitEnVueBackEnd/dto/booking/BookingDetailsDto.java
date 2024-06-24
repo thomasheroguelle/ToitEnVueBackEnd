@@ -16,4 +16,4 @@ public class BookingDetailsDto {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date endDate;
     private double price;
-}
+    }

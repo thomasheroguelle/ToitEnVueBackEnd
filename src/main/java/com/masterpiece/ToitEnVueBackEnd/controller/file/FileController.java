@@ -1,7 +1,9 @@
 package com.masterpiece.ToitEnVueBackEnd.controller.file;
 
+import com.masterpiece.ToitEnVueBackEnd.dto.housing.HousingDto;
 import com.masterpiece.ToitEnVueBackEnd.model.file.File;
 import com.masterpiece.ToitEnVueBackEnd.repository.housing.HousingRepository;
+import com.masterpiece.ToitEnVueBackEnd.security.jwt.UserDetailsUtils;
 import com.masterpiece.ToitEnVueBackEnd.service.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 @Controller
 @RequestMapping("api/v1/files")

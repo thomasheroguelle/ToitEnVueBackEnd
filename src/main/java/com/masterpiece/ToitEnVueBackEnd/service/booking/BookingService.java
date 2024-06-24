@@ -4,6 +4,7 @@ import com.masterpiece.ToitEnVueBackEnd.dto.booking.BookingDetailsDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.MakeBookingDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.OwnerChoiceDto;
 import com.masterpiece.ToitEnVueBackEnd.dto.booking.UserBookingsDto;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;

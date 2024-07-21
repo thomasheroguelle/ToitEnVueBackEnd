@@ -41,6 +41,7 @@ public class HousingController {
     @Autowired
     private HousingRepository housingRepository;
 
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createHousing(@Valid @RequestPart("housing") String createHousingJson,
                                            @Valid @RequestPart("files") List<MultipartFile> files
@@ -111,6 +112,7 @@ public class HousingController {
         }
 
         housingRepository.deleteById(id);
+        // corriger , pas de repo dans un controller
 
         return ResponseEntity.ok().build();
     }

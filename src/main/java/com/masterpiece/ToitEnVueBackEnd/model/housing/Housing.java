@@ -81,6 +81,5 @@ public class Housing {
     private List<File> files = new ArrayList<>();
 
     @OneToMany(mappedBy = "housing", cascade = CascadeType.ALL)
-    @JsonManagedReference // Prevent infinite recursion
     private List<Booking> bookings = new ArrayList<>();
 }

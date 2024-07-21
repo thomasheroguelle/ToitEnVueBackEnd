@@ -29,13 +29,16 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
+    // @Override indique que cette méthode substitue une méthode de l'interface FileStorageService
     @Override
     public void save(MultipartFile file) {
         if (file.isEmpty()) {
             throw new EmptyFileException("Veuillez insérer un fichier");
         }
         try {
-            this.init();
+            this.init(); // Initialise le répertoire de stockage des fichiers s'il n'a pas encore été initialisé
+
+            // Copie le contenu du fichier (via son flux d'entrée) dans le répertoire racine avec son nom d'origine
             Files.copy(file.getInputStream(), this.root.resolve(Objects.requireNonNull(file.getOriginalFilename())));
         } catch (Exception e) {
             if (e instanceof FileAlreadyExistsException) {
